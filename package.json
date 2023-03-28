@@ -8,7 +8,9 @@
   "bin": {
     "i18n": "script/i18n.js"
   },
-  "scripts": {},
+  "scripts": {
+    "test": "node script/i18n --import ./langs.xlsx"
+  },
   "keywords": [],
   "license": "MIT",
   "author": {

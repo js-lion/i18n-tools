@@ -20,6 +20,25 @@ export const Languages = function() {
   return list;
 };
 
+export const normalize = function(result) {
+  const list = [
+    ["Code"].concat(result.map(item => _.toUpper(item.language)))
+  ];
+  const data = safeGet(result, "[0].value")
+  for (const key of Object.keys(data)) {
+    const value = [
+      key,
+      data[key]
+    ];
+    for(let i = 1, len = result.length; i < len; i++) {
+      const temp = safeGet(result, `[${i}].value`);
+      value.push(temp[key]);
+    }
+    list.push(value);
+  }
+  return list;
+};
+
 const read = function(languages, path = []) {
   const result = {};
   path = _.compact(_.concat([], path));
@@ -55,21 +74,32 @@ export const ReadLanguages = function() {
   return files;
 };
 
-export const normalize = function(result) {
-  const list = [
-    ["Code"].concat(result.map(item => _.toUpper(item.language)))
-  ];
-  const data = safeGet(result, "[0].value")
-  for (const key of Object.keys(data)) {
-    const value = [
-      key,
-      data[key]
-    ];
-    for(let i = 1, len = result.length; i < len; i++) {
-      const temp = safeGet(result, `[${i}].value`);
-      value.push(temp[key]);
+export const ParseLanguages = function(result) {
+  const data = {};
+  let [[, ...keys], ...list] = result;
+  keys = keys.map(value => _.toLower(value));
+  for (const item of list) {
+    const [key, ...array] = item;
+    for (let index = 0, len = keys.length; index < len; index++) {
+      const type = keys[index];
+      const value = array[index] || "";
+      safeSet(data, [type, key], value);
     }
-    list.push(value);
   }
-  return list;
-};
+  const files = [];
+  const suffix = "ts";
+
+  for (const type of keys) {
+    const list = Object.keys(data[type]);
+    const index = list.map(name => `export { default as ${name} } from "./${name}";`).join("\n");
+    files.push({ name: path.join(type, `index.${suffix}`), value: index });
+    for (const name of list) {
+      const value = safeGet(data, [type, name]);
+      const text = JSON.stringify(value, null, 2);
+      const code = `export default ${text};`;
+      const title = path.join(type, `${name}.${suffix}`);
+      files.push({ name: title, value: code });
+    }
+  }
+  return files;
+}

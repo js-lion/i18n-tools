@@ -18,7 +18,7 @@ const main = function() {
   if (option.import) {
     const value = option.import;
     if (typeof value === "string") {
-      console.log("import file src = %s", value);
+      tool.importFile(value);
     }
   }
   shelljs.exit();
