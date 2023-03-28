@@ -38,12 +38,12 @@ export const importFile = function(file) {
   const fromFile = xlsx.parse(file);
   const content = safeGet(fromFile, "[0].data") || [];
   const files = ParseLanguages(content);
-  for (const file of files) {
-    // 拼接双语文件路径
-    const src = path.join(env.langs, file.name);
-    // 判断文件目录是否存在，不存在则创建
-    shell.mkdir("-p", path.dirname(src));
-    // 写入文件, 如果文件存在则覆盖
-    fs.writeFileSync(src, file.value);
-  }
+  // for (const file of files) {
+  //   // 拼接双语文件路径
+  //   const src = path.join(env.langs, file.name);
+  //   // 判断文件目录是否存在，不存在则创建
+  //   shell.mkdir("-p", path.dirname(src));
+  //   // 写入文件, 如果文件存在则覆盖
+  //   fs.writeFileSync(src, file.value);
+  // }
 }
