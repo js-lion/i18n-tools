@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          registry-url: ${{secrets.REGISTRY}}
+          registry-url: http://npm.jslion.xyz/
       # - run: yarn
       # - run: npm run build
       - run: npm publish
