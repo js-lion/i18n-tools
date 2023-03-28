@@ -1,0 +1,13 @@
+.git
+.idea
+.vscode
+.DS_Store
+.npmrc
+.npmignore
+test
+node_modules
+pnpm-lock.yaml
+yarn.lock
+npm-shrinkwrap.json
+index.html
+*.xlsx
