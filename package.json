@@ -1,7 +1,7 @@
 {
   "name": "@js-lion/i18n-tools",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "tool.js",
   "type": "module",
@@ -9,7 +9,7 @@
     "i18n": "script/i18n.js"
   },
   "scripts": {
-    "test": "node script/i18n --import ./langs.xlsx"
+    "test": "node script/i18n --export ./langs.xlsx"
   },
   "keywords": [],
   "license": "MIT",

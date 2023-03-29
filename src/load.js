@@ -1,6 +1,6 @@
-import fs from "fs";
 import { VM } from "vm2";
 import shell from "shelljs";
+import { isFile } from "./file.js";
 
 const cat = function(src) {
   return shell.cat(src).toString().trim();
@@ -23,7 +23,7 @@ const code = function(src) {
 }
 
 const load = function(src) {
-  if (fs.existsSync(src)) {
+  if (isFile(src)) {
     if (/\.json$/i.test(src)) {
       return json(src);
     }

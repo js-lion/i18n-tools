@@ -1,9 +1,8 @@
-import fs from "fs";
 import path from "path";
-import shell from "shelljs";
 import xlsx from "node-xlsx";
+import * as util from "./util.js";
 import { getEnv } from "./env.js";
-import { ReadLanguages, ParseLanguages, normalize} from "./result.js";
+import { ReadHistory ,ReadLanguages, ParseLanguages} from "./result.js";
 import safeGet from "@fengqiaogang/safe-get";
 
 // 导出双语文件
@@ -19,13 +18,16 @@ export const exportFile = function(name, title) {
     src = path.join(env.root, name);
   }
   const result = ReadLanguages();
+  const value = util.toXlsx(result);
+  const data = util.excludeLanguages(value, ReadHistory());
   const option = { 
     options: {},
     name: title ? title : "中英文文案", 
-    data: normalize(result),
+    data: data,
   };
   const content = xlsx.build([option]);
-  fs.writeFileSync(src, content);
+  // 文件写入
+  util.writeFile(src, content);
   console.log("Exported Languages success. file src = %s", src);
 }
 
@@ -38,12 +40,11 @@ export const importFile = function(file) {
   const fromFile = xlsx.parse(file);
   const content = safeGet(fromFile, "[0].data") || [];
   const files = ParseLanguages(content);
-  // for (const file of files) {
-  //   // 拼接双语文件路径
-  //   const src = path.join(env.langs, file.name);
-  //   // 判断文件目录是否存在，不存在则创建
-  //   shell.mkdir("-p", path.dirname(src));
-  //   // 写入文件, 如果文件存在则覆盖
-  //   fs.writeFileSync(src, file.value);
-  // }
+  for (const file of files) {
+    // 拼接双语文件路径
+    const src = path.join(env.langs, file.name);
+    // 文件写入
+    util.writeFile(src, file.value);
+  }
+  console.log("Import Languages success");
 }
